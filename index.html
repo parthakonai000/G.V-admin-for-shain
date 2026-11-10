@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#6C63FF">
+<title>শিক্ষার্থী পোর্টাল · P. K PRACTICE</title>
+<meta name="description" content="P. K PRACTICE-এর শিক্ষার্থী পরিবার">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #ffffff; --text: #1e293b; --muted: #64748b; --line: #e6eaf3;
+    --primary: #6C63FF; --primary-2: #8b5cf6; --chip: #eef0f8;
+    --shadow: 0 4px 16px rgba(30, 41, 59, .07); --glass: rgba(244, 246, 251, .88);
+    --active: #15803d; --active-bg: #dcfce7;
+    --pending: #b45309; --pending-bg: #fef3c7;
+    --unpaid: #475569; --unpaid-bg: #e8ecf3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1222; --card: #181c33; --text: #e8ebf7; --muted: #9aa3c0; --line: #262b4a; --chip: #23274a;
+      --shadow: 0 4px 16px rgba(0, 0, 0, .35); --glass: rgba(15, 18, 34, .88);
+      --active: #4ade80; --active-bg: rgba(34, 197, 94, .16);
+      --pending: #fbbf24; --pending-bg: rgba(245, 158, 11, .16);
+      --unpaid: #aab4d0; --unpaid-bg: rgba(148, 163, 184, .16);
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; font-family: 'Hind Siliguri', sans-serif; background: var(--bg); color: var(--text);
+    padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+  }
+  button { font: inherit; cursor: pointer; border: 0; color: inherit; background: none; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative; overflow: hidden; color: #fff; text-align: center;
+    padding: calc(26px + env(safe-area-inset-top, 0px)) 20px 80px;
+    background: linear-gradient(135deg, #6C63FF 0%, #8b5cf6 55%, #a855f7 100%);
+    border-radius: 0 0 32px 32px;
+  }
+  .blob { position: absolute; border-radius: 50%; opacity: .18; background: #fff; animation: float 9s ease-in-out infinite; }
+  .b1 { width: 200px; height: 200px; top: -80px; left: -60px; }
+  .b2 { width: 150px; height: 150px; bottom: -50px; right: -30px; animation-delay: -4s; }
+  @keyframes float { 50% { transform: translateY(12px) scale(1.05); } }
+  .hero-in { position: relative; max-width: 560px; margin: 0 auto; }
+  .brand { display: inline-block; font-weight: 700; font-size: .82rem; letter-spacing: 1px; background: rgba(255,255,255,.18); padding: 6px 14px; border-radius: 999px; }
+  .hero h1 { margin: 14px 0 6px; font-size: 1.6rem; line-height: 1.25; font-weight: 700; }
+  .hero .sub { margin: 0; opacity: .9; font-size: .95rem; }
+  #refresh {
+    position: absolute; top: calc(18px + env(safe-area-inset-top, 0px)); right: 16px; width: 40px; height: 40px;
+    border-radius: 50%; background: rgba(255,255,255,.18); display: grid; place-items: center; color: #fff;
+  }
+  #refresh:active { transform: scale(.9); }
+  #refresh.spin svg { animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---------- Summary ---------- */
+  .summary {
+    position: relative; width: calc(100% - 28px); max-width: 560px; margin: -52px auto 0;
+    background: var(--card); border-radius: 24px; padding: 18px 16px 16px;
+    box-shadow: 0 16px 36px rgba(76, 60, 200, .22);
+  }
+  .total { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 14px; }
+  .num { font-size: 2.6rem; font-weight: 700; line-height: 1; color: var(--primary); }
+  .lbl { font-size: .92rem; font-weight: 500; color: var(--muted); line-height: 1.35; text-align: left; }
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .tile {
+    border-radius: 16px; padding: 10px 4px; text-align: center; border: 2px solid transparent;
+    background: var(--st-bg); color: var(--st); transition: transform .15s, background .2s, color .2s, box-shadow .2s;
+  }
+  .tile b { display: block; font-size: 1.35rem; line-height: 1.2; }
+  .tile span { font-size: .78rem; font-weight: 600; }
+  .tile:active { transform: scale(.95); }
+  .tile.on { background: var(--st); color: #fff; box-shadow: 0 8px 18px var(--glow); }
+  .t-active { --st: var(--active); --st-bg: var(--active-bg); --glow: rgba(22, 163, 74, .35); }
+  .t-pending { --st: var(--pending); --st-bg: var(--pending-bg); --glow: rgba(217, 119, 6, .35); }
+  .t-unpaid { --st: var(--unpaid); --st-bg: var(--unpaid-bg); --glow: rgba(71, 85, 105, .35); }
+  @media (prefers-color-scheme: dark) { .tile.on { color: #0f1222; } }
+
+  /* ---------- Search ---------- */
+  .toolbar {
+    position: sticky; top: 0; z-index: 10; padding: calc(12px + env(safe-area-inset-top, 0px)) 14px 10px; margin-top: 8px;
+    background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .search {
+    max-width: 980px; margin: 0 auto; display: flex; align-items: center; gap: 10px; background: var(--card);
+    border: 1.5px solid var(--line); border-radius: 16px; padding: 0 12px; height: 50px; box-shadow: var(--shadow);
+  }
+  .search:focus-within { border-color: var(--primary); }
+  .search svg { flex-shrink: 0; color: var(--muted); }
+  .search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: inherit; font-size: 16px; color: var(--text); }
+  .search input::placeholder { color: var(--muted); }
+  #clr { width: 26px; height: 26px; border-radius: 50%; background: var(--chip); color: var(--muted); font-size: .85rem; }
+
+  /* ---------- List ---------- */
+  main { max-width: 980px; margin: 0 auto; padding: 4px 14px 0; }
+  .chips { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 12px; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--chip); border-radius: 999px; font-weight: 600; font-size: .86rem; transition: all .18s; }
+  .chip small { opacity: .7; font-size: .75rem; }
+  .chip.on { background: var(--primary); color: #fff; box-shadow: 0 6px 14px rgba(108, 99, 255, .35); }
+
+  .meta { min-height: 24px; margin: 0 4px 10px; color: var(--muted); font-size: .88rem; font-weight: 500; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .meta .reset { color: var(--primary); font-weight: 700; padding: 2px 4px; }
+
+  .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  @media (min-width: 620px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 940px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .card {
+    display: flex; align-items: center; gap: 14px; padding: 14px 14px 14px 18px; background: var(--card);
+    border-radius: 20px; border: 1px solid var(--line);
+    box-shadow: var(--shadow), inset 4px 0 0 var(--st);
+    opacity: 0; transform: translateY(12px); animation: rise .45s ease forwards; animation-delay: var(--d, 0ms);
+    transition: transform .2s, box-shadow .2s;
+  }
+  @media (hover: hover) { .card:hover { transform: translateY(-3px); } }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  .s-active { --st: var(--active); }
+  .s-pending { --st: var(--pending); }
+  .s-unpaid { --st: var(--unpaid); }
+
+  .avatar {
+    width: 52px; height: 52px; border-radius: 17px; flex-shrink: 0; display: grid; place-items: center;
+    color: #fff; font-weight: 700; font-size: 1.35rem; text-shadow: 0 2px 6px rgba(0,0,0,.2);
+  }
+  .info { min-width: 0; flex: 1; }
+  .row1 { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .nm { font-weight: 700; font-size: 1.04rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .badge {
+    flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px; font-size: .74rem; font-weight: 700;
+    padding: 3px 10px; border-radius: 999px; color: var(--st); background: color-mix(in srgb, var(--st) 14%, transparent);
+  }
+  .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--st); }
+  .s-pending .badge::before { animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .25; transform: scale(1.5); } }
+  .row2 { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 5px; }
+  .loc { font-size: .8rem; font-weight: 600; color: var(--primary); background: var(--chip); padding: 2px 10px; border-radius: 999px; }
+  .tag-new { font-size: .68rem; font-weight: 700; color: #fff; padding: 2px 8px; border-radius: 999px; background: linear-gradient(135deg, #f97316, #ef4444); }
+  .when { margin-top: 5px; font-size: .77rem; color: var(--muted); }
+
+  .more { text-align: center; margin-top: 18px; }
+  #more { background: var(--primary); color: #fff; font-weight: 700; padding: 13px 28px; border-radius: 16px; box-shadow: 0 10px 24px rgba(108, 99, 255, .35); }
+  #more:active { transform: scale(.96); }
+
+  .skeleton { height: 88px; border-radius: 20px; background: linear-gradient(90deg, var(--chip) 25%, var(--card) 50%, var(--chip) 75%); background-size: 200% 100%; animation: shine 1.3s infinite; }
+  @keyframes shine { to { background-position: -200% 0; } }
+  .state { grid-column: 1 / -1; text-align: center; padding: 44px 20px; color: var(--muted); }
+  .state .em { font-size: 3rem; }
+  .state p { margin: 8px 0 0; font-weight: 500; }
+  .state button { margin-top: 14px; background: var(--primary); color: #fff; padding: 10px 20px; border-radius: 12px; font-weight: 600; }
+
+  footer { text-align: center; color: var(--muted); font-size: .8rem; margin-top: 26px; }
+  #toast {
+    position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px);
+    background: #1e293b; color: #fff; padding: 11px 20px; border-radius: 999px; font-size: .9rem; font-weight: 500;
+    opacity: 0; pointer-events: none; transition: all .25s; z-index: 30; max-width: 90%; text-align: center;
+  }
+  #toast.show { opacity: 1; transform: translate(-50%, 0); }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    .card { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="blob b1"></div><div class="blob b2"></div>
+  <button id="refresh" aria-label="রিফ্রেশ">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
+  </button>
+  <div class="hero-in">
+    <div class="brand">🎓 P. K PRACTICE</div>
+    <h1>আমাদের শিক্ষার্থী পরিবার</h1>
+    <p class="sub">যারা প্রতিদিন নতুন কিছু শিখছেন আমাদের সাথে</p>
+  </div>
+</header>
+
+<section class="summary" aria-live="polite">
+  <div class="total">
+    <div class="num" id="num">০</div>
+    <div class="lbl">জন শিক্ষার্থী<br>আমাদের সাথে আছেন</div>
+  </div>
+  <div class="tiles">
+    <button class="tile t-active" data-st="active" aria-pressed="false"><b id="cActive">০</b><span>অ্যাক্টিভ</span></button>
+    <button class="tile t-pending" data-st="pending" aria-pressed="false"><b id="cPending">০</b><span>পেন্ডিং</span></button>
+    <button class="tile t-unpaid" data-st="unpaid" aria-pressed="false"><b id="cUnpaid">০</b><span>আনপেড</span></button>
+  </div>
+</section>
+
+<div class="toolbar">
+  <label class="search">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="নাম বা জেলা দিয়ে খুঁজুন" autocomplete="off" aria-label="খুঁজুন">
+    <button id="clr" hidden aria-label="মুছুন">✕</button>
+  </label>
+</div>
+
+<main>
+  <div class="chips" id="chips"></div>
+  <div class="meta" id="meta"></div>
+  <div class="grid" id="grid"></div>
+  <div class="more"><button id="more" hidden>আরও দেখুন</button></div>
+  <footer id="upd"></footer>
+</main>
+
+<div id="toast"></div>
+
+<script>
+(() => {
+  const API_URL = 'https://script.google.com/macros/s/AKfycbzKUsVNYeErHuSdkalfY1p_fTCFEqi4VkE43w2alv2jYHuhyLF7Hv83dTVLhoWxiP1O/exec';
+  const CACHE_KEY = 'pkportal_v2';
+  const PAGE = 24;
+  const ALL = 'সব';
+  const LABEL = { active: 'অ্যাক্টিভ', pending: 'পেন্ডিং', unpaid: 'আনপেড' };
+
+  const $ = id => document.getElementById(id);
+  const bn = n => Number(n).toLocaleString('bn-BD');
+  const el = (tag, cls, text) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  };
+
+  let users = [], district = ALL, st = 'all', query = '', limit = PAGE, shownNum = 0, toastTimer;
+
+  function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  function ago(ts) {
+    if (!ts) return '';
+    const d = Math.floor((Date.now() - ts) / 86400000);
+    if (d < 1) return 'আজ যোগ দিয়েছেন';
+    if (d === 1) return 'গতকাল যোগ দিয়েছেন';
+    if (d < 30) return bn(d) + ' দিন আগে যোগ দিয়েছেন';
+    if (d < 365) return bn(Math.floor(d / 30)) + ' মাস আগে যোগ দিয়েছেন';
+    return bn(Math.floor(d / 365)) + ' বছর আগে যোগ দিয়েছেন';
+  }
+
+  function hue(s) {
+    let h = 0;
+    for (const c of s) h = (h * 31 + c.codePointAt(0)) % 360;
+    return h;
+  }
+
+  const normStatus = s => (s === 'active' || s === 'pending') ? s : 'unpaid';
+
+  function countTo(n) {
+    const node = $('num'), from = shownNum;
+    shownNum = n;
+    if (from === n || matchMedia('(prefers-reduced-motion: reduce)').matches) { node.textContent = bn(n); return; }
+    const t0 = performance.now(), dur = 900;
+    const step = t => {
+      const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      node.textContent = bn(Math.round(from + (n - from) * e));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  function updateTiles() {
+    const c = { active: 0, pending: 0, unpaid: 0 };
+    users.forEach(u => c[u.status]++);
+    $('cActive').textContent = bn(c.active);
+    $('cPending').textContent = bn(c.pending);
+    $('cUnpaid').textContent = bn(c.unpaid);
+    document.querySelectorAll('.tile').forEach(t => {
+      const on = t.dataset.st === st;
+      t.classList.toggle('on', on);
+      t.setAttribute('aria-pressed', on);
+    });
+  }
+
+  function buildChips() {
+    const counts = {};
+    users.forEach(u => { if (u.district) counts[u.district] = (counts[u.district] || 0) + 1; });
+    const list = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    if (district !== ALL && !counts[district]) district = ALL;
+
+    const box = $('chips');
+    box.textContent = '';
+    box.hidden = list.length < 2;
+    const add = (label, count, val) => {
+      const b = el('button', 'chip' + (district === val ? ' on' : ''));
+      b.append(document.createTextNode(label), el('small', '', bn(count)));
+      b.onclick = () => { district = val; limit = PAGE; buildChips(); renderGrid(); };
+      box.append(b);
+    };
+    add(ALL, users.length, ALL);
+    list.forEach(([d, c]) => add(d, c, d));
+  }
+
+  function filtered() {
+    const q = query.trim().toLowerCase();
+    return users.filter(u =>
+      (st === 'all' || u.status === st) &&
+      (district === ALL || u.district === district) &&
+      (!q || (u.name + ' ' + u.district).toLowerCase().includes(q))
+    );
+  }
+
+  function resetAll() {
+    st = 'all'; district = ALL; query = ''; limit = PAGE;
+    $('q').value = ''; $('clr').hidden = true;
+    updateTiles(); buildChips(); renderGrid();
+  }
+
+  function renderMeta(n) {
+    const meta = $('meta');
+    meta.textContent = '';
+    if (!users.length) return;
+    if (st !== 'all' || district !== ALL || query.trim()) {
+      meta.append(el('span', '', bn(n) + ' জন পাওয়া গেছে'));
+      const b = el('button', 'reset', 'সব দেখুন');
+      b.onclick = resetAll;
+      meta.append(b);
+    } else {
+      meta.append(el('span', '', 'স্ট্যাটাসে ট্যাপ করে ফিল্টার করুন'));
+    }
+  }
+
+  function state(emoji, msg, retry) {
+    const s = el('div', 'state');
+    s.append(el('div', 'em', emoji), el('p', '', msg));
+    if (retry) { const b = el('button', '', 'আবার চেষ্টা করুন'); b.onclick = () => load(true); s.append(b); }
+    return s;
+  }
+
+  function renderGrid() {
+    const grid = $('grid');
+    grid.textContent = '';
+    const list = filtered();
+    renderMeta(list.length);
+
+    if (!users.length) { grid.append(state('🌱', 'শিক্ষার্থীরা শীঘ্রই এখানে দেখা যাবে')); $('more').hidden = true; return; }
+    if (!list.length) { grid.append(state('🔍', 'কাউকে খুঁজে পাওয়া যায়নি')); $('more').hidden = true; return; }
+
+    list.slice(0, limit).forEach((u, i) => {
+      const card = el('article', 'card s-' + u.status);
+      card.style.setProperty('--d', (i % PAGE) * 35 + 'ms');
+
+      const name = u.name || 'নাম নেই';
+      const h = hue(name);
+      const av = el('div', 'avatar', Array.from(name)[0].toUpperCase());
+      av.style.background = `linear-gradient(135deg, hsl(${h} 78% 62%), hsl(${(h + 45) % 360} 80% 56%))`;
+
+      const info = el('div', 'info');
+      const row1 = el('div', 'row1');
+      row1.append(el('span', 'nm', name), el('span', 'badge', LABEL[u.status]));
+      info.append(row1);
+
+      const row2 = el('div', 'row2');
+      if (u.district) row2.append(el('span', 'loc', '📍 ' + u.district));
+      if (u.joinedAt && Date.now() - u.joinedAt < 7 * 86400000) row2.append(el('span', 'tag-new', 'নতুন'));
+      if (row2.children.length) info.append(row2);
+
+      const w = ago(u.joinedAt);
+      if (w) info.append(el('div', 'when', w));
+
+      card.append(av, info);
+      grid.append(card);
+    });
+    $('more').hidden = list.length <= limit;
+  }
+
+  function apply(data) {
+    users = (data.users || [])
+      .map(u => ({ ...u, status: normStatus(u.status) }))
+      .sort((a, b) => (b.joinedAt || 0) - (a.joinedAt || 0));
+    countTo(users.length);
+    updateTiles();
+    buildChips();
+    renderGrid();
+    if (data.updatedAt) {
+      $('upd').textContent = 'সর্বশেষ আপডেট: ' + new Date(data.updatedAt).toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
+    }
+  }
+
+  function showSkeleton() {
+    const grid = $('grid');
+    grid.textContent = '';
+    for (let i = 0; i < 6; i++) grid.append(el('div', 'skeleton'));
+  }
+
+  async function load(manual) {
+    $('refresh').classList.add('spin');
+    if (!users.length) showSkeleton();
+    try {
+      const res = await fetch(API_URL, { cache: 'no-store' });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.message || 'error');
+      apply(data);
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch (e) {}
+      if (manual) toast('আপডেট হয়েছে ✔');
+    } catch (e) {
+      if (users.length) {
+        toast('নতুন তথ্য আনা যায়নি');
+      } else {
+        const grid = $('grid');
+        grid.textContent = '';
+        grid.append(state('📡', 'তথ্য আনা যায়নি। ইন্টারনেট দেখে আবার চেষ্টা করুন।', true));
+      }
+    } finally {
+      $('refresh').classList.remove('spin');
+    }
+  }
+
+  document.querySelectorAll('.tile').forEach(t => {
+    t.onclick = () => {
+      st = (st === t.dataset.st) ? 'all' : t.dataset.st;
+      limit = PAGE;
+      updateTiles();
+      renderGrid();
+    };
+  });
+  $('q').addEventListener('input', e => {
+    query = e.target.value;
+    $('clr').hidden = !query;
+    limit = PAGE;
+    renderGrid();
+  });
+  $('clr').onclick = () => { $('q').value = ''; query = ''; $('clr').hidden = true; limit = PAGE; renderGrid(); $('q').focus(); };
+  $('more').onclick = () => { limit += PAGE; renderGrid(); };
+  $('refresh').onclick = () => load(true);
+
+  // আগের সেভ করা তথ্য আগে দেখাও (দ্রুত লোড), পিছনে নতুন তথ্য আনো
+  try {
+    const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (cached && cached.ok) apply(cached);
+  } catch (e) {}
+
+  load(false);
+  setInterval(() => { if (!document.hidden) load(false); }, 300000);
+})();
+</script>
+</body>
+</html>
